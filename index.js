@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 
 let phonebook = [
   {
@@ -57,6 +58,30 @@ app.delete("/api/persons/:id", (request, response) => {
   phonebook = phonebook.filter((p) => p.id !== id);
 
   response.status(204).end();
+});
+
+const generateId = () => {
+  return Math.floor(Math.random() * 10000);
+};
+
+app.post("/api/persons/", (request, response) => {
+  const body = request.body;
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: "missing name or number",
+    });
+  }
+
+  const per = {
+    id: generateId(),
+    name: body.name,
+    number: body.number,
+  };
+
+  phonebook = phonebook.concat(per);
+
+  response.json(per);
 });
 
 const PORT = 3002;
