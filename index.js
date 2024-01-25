@@ -71,6 +71,10 @@ app.post("/api/persons/", (request, response) => {
     return response.status(400).json({
       error: "missing name or number",
     });
+  } else if (phonebook.some((per) => per.name === body.name)) {
+    return response.status(400).json({
+      error: "unique names only",
+    });
   }
 
   const per = {
