@@ -18,17 +18,19 @@ app.get("/api/persons", (request, response) => {
 });
 
 
-app.get("/info", (request, response) => {
-  console.log("Headers:", request.headers);
-
-  const date = new Date();
-  const info = `
-  <p></p>Phonebook has info for ${phonebook.length} people</p>
-  <p>${date}</p>
-
-  `;
-  response.send(info);
+app.get("/info", (request, response, next) => {
+  Person.countDocuments({})
+    .then(count => {
+      const date = new Date();
+      const info = `
+        <p>Phonebook has info for ${count} people</p>
+        <p>${date}</p>
+      `;
+      response.send(info);
+    })
+    .catch(error => next(error));
 });
+
 
 app.get('/api/persons/:id', (request, response,next) => {
   Person.findById(request.params.id).then(person => {
@@ -51,6 +53,22 @@ app.delete("/api/persons/:id", (request, response) => {
 
 });
 
+app.put("/api/persons/:id", (request, response, next) => {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person.findByIdAndUpdate(request.params.id, person, {new : true})
+  .then(upatedPerson => {
+    response.json(upatedPerson)
+  })
+  .catch(error => next(error))
+
+
+})
 
 
 app.post("/api/persons/", (request, response) => {
