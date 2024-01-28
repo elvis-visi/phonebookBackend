@@ -102,7 +102,7 @@ const errorHandler = (error, request, response, next) => {
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   }
-
+// Passes the error to the next error handling middleware (if any) or to Express's default error handler
   next(error) 
 }
 
