@@ -44,10 +44,11 @@ app.get('/api/persons/:id', (request, response,next) => {
 })
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  phonebook = phonebook.filter((p) => p.id !== id);
+  Person.findByIdAndDelete(request.params.id).then(result => {
+    response.status(204).end()  //204 no content.
+   })
+   .catch(error => next(error))
 
-  response.status(204).end();
 });
 
 
